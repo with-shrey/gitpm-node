@@ -30,12 +30,22 @@ gitpm-node install
 gitpm-node install --save git+https://<DOMAIN>/path/to/package.git
 ```
 
-2. Normal npm dependencies can also be installed 
+2. Normal npm dependencies can also be installed with options 
 
 ```
 gitpm-node install --save <npm package name>
 ```
 
-> the above commands will prompt for git credentialsa and create a `auth.json` in the same directory as `package.json` containing the git http credentials
+> the above commands will prompt for git credentials and create an `auth.json` in the same directory as `package.json` containing the git http credentials
 
-> In case if auth.json exists, it will be used without prompt
+> In case if auth.json exists, it will be used without any prompt (Usefull incase of CI/CD)
+
+- Example `auth.json`
+```
+{
+  "git.domain.com": {
+    "username": "<username / token name>",
+    "password": "<password / personal token>"
+  }
+}
+```
