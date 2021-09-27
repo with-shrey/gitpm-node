@@ -50,6 +50,7 @@ program
   .action(async () => {
     credentialsStoreManager = new GitStoreManager();
     const exitCode = await install();
+    console.log(exitCode);
     await credentialsStoreManager.restoreSettings();
     process.exit(exitCode || 1);
   });

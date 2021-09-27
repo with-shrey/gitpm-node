@@ -6,19 +6,19 @@ const basicAuthSchema = {
   properties: {
     username: {
       required: true,
-      description: chalk.bgBlue.white('Enter your username'),
+      description: chalk.magenta('Enter your username'),
     },
     password: {
       hidden: true,
       required: true,
-      description: chalk.bgBlue.white('Enter your password'),
+      description: chalk.magenta('Enter your password'),
     },
   },
 };
 
 module.exports = {
   getUserNameAndPassword(domain) {
-    console.log(chalk.bgBlue.white(`Credentials for ${domain}`));
+    console.log(chalk.magenta(`Credentials for ${domain}`));
     prompt.start();
     return new Promise((resolve, reject) => {
       prompt.get(basicAuthSchema, (err, result) => {

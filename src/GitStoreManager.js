@@ -15,12 +15,12 @@ class GitStoreManager {
     try {
       this.previousStoreSetting = await asyncChildProcess(`git config --global credential.helper`);
     } catch (e) {
-      console.warn('WARN: Error getting previous store setting, Will Skip', e);
+      console.warn('WARN: Error getting previous store setting, Will Skip');
     }
     try {
       await asyncChildProcess(`git config --global credential.helper store`);
     } catch (e) {
-      console.warn('WARN: Error setting file store as default', e);
+      console.warn('WARN: Error setting file store as default');
     }
   }
 
@@ -31,6 +31,8 @@ class GitStoreManager {
         await asyncChildProcess(
           `git config --global --replace-all credential.helper "${this.previousStoreSetting}"`,
         );
+        const configFilePath = path.join(HOME_DIR, GIT_STORE_FILENAME);
+        await fs.unlink(configFilePath);
       }
     } catch (e) {
       console.error('ERROR: Cleaning up Git Config', e);
@@ -43,7 +45,7 @@ class GitStoreManager {
       credentials.push(`https://${creds.username}:${creds.password}@${domain}`);
     });
     const configFilePath = path.join(HOME_DIR, GIT_STORE_FILENAME);
-    await fs.writeFile(configFilePath, credentials.join(''));
+    await fs.writeFile(configFilePath, credentials.join('\n'));
     await asyncChildProcess(
       `git config --global --replace-all credential.helper "store --file=${configFilePath}"`,
     );
