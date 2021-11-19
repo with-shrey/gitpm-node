@@ -5,10 +5,11 @@ const { asyncChildProcess } = require('./utils');
 
 async function checkAuthForGit(url) {
   const response = await asyncChildProcess(
-    `if GIT_ASKPASS=/bin/echo GIT_TERMINAL_PROMPT=0 git ls-remote ${url} &> /dev/null ; then echo 1 ; else echo 0; fi`,
+    `if GIT_ASKPASS=/bin/echo GIT_TERMINAL_PROMPT=0 git ls-remote --exit-code ${url} >/dev/null 2>&1 ; then echo 1 ; else echo 0; fi`,
     false,
   );
-  return Number(response) === 1;
+  const result = Number(response) === 1;
+  return result;
 }
 
 async function getGitUrlsFromDeps(deps) {
@@ -18,8 +19,11 @@ async function getGitUrlsFromDeps(deps) {
     async (dep) => {
       const checkingLog = chalk.yellow('Checked ') + chalk.magenta(`${dep} : `);
       if (dep.startsWith('git+https://')) {
-        const hostName = new URL(dep).hostname;
-        const isAuthenticated = await checkAuthForGit(dep.replace('git+https://', 'https://'));
+        const urlParsed = new URL(dep);
+        const hostName = urlParsed.hostname;
+        const isAuthenticated = await checkAuthForGit(
+          `${'https://'}${urlParsed.host}${urlParsed.pathname}`,
+        );
         if (!isAuthenticated) {
           console.log(checkingLog + chalk.red(' Needs Auth ❌'));
           domains.add(hostName);
