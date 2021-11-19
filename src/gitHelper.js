@@ -5,7 +5,7 @@ const { asyncChildProcess } = require('./utils');
 
 async function checkAuthForGit(url) {
   const response = await asyncChildProcess(
-    `if GIT_ASKPASS=/bin/echo GIT_TERMINAL_PROMPT=0 git ls-remote ${url} ; then echo 1 ; else echo 0; fi`,
+    `if GIT_ASKPASS=/bin/echo GIT_TERMINAL_PROMPT=0 git ls-remote ${url} &> /dev/null ; then echo 1 ; else echo 0; fi`,
     false,
   );
   return Number(response) === 1;
