@@ -15,17 +15,7 @@ function spawnNpmInstall(args = []) {
     const child = spawn('npm', ['install', ...(args || [])], {
       cwd: process.cwd(),
       env: process.env,
-    });
-    child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (data) => {
-      // Here is where the output goes
-      process.stdout.write(data);
-    });
-
-    child.stderr.setEncoding('utf8');
-    child.stderr.on('data', (data) => {
-      // Here is where the error output goes
-      process.stderr.write(data);
+      stdio: 'inherit',
     });
 
     child.on('close', () => {
