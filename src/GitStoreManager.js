@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const Promise = require('bluebird');
-const fs = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 const HOME_DIR = require('os').homedir();
 const { asyncChildProcess } = require('./utils');
@@ -32,7 +32,7 @@ class GitStoreManager {
           `git config --global --replace-all credential.helper "${this.previousStoreSetting}"`,
         );
         const configFilePath = path.join(HOME_DIR, GIT_STORE_FILENAME);
-        await fs.unlink(configFilePath);
+        await fs.unlinkSync(configFilePath);
       }
     } catch (e) {
       console.error('ERROR: Cleaning up Git Config', e);
@@ -45,7 +45,7 @@ class GitStoreManager {
       credentials.push(`https://${creds.username}:${creds.password}@${domain}`);
     });
     const configFilePath = path.join(HOME_DIR, GIT_STORE_FILENAME);
-    await fs.writeFile(configFilePath, credentials.join('\n'));
+    await fs.writeFileSync(configFilePath, credentials.join('\n'));
     await asyncChildProcess(
       `git config --global --replace-all credential.helper "store --file=${configFilePath}"`,
     );

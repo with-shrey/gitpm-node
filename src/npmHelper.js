@@ -1,6 +1,6 @@
 const { spawn } = require('child_process');
 const chalk = require('chalk');
-const fs = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 const Promise = require('bluebird');
 const { checkFileExists } = require('./utils');
@@ -14,7 +14,10 @@ function spawnNpmInstall(args = []) {
   return new Promise((resolve) => {
     const child = spawn('npm', ['install', ...(args || [])], {
       cwd: process.cwd(),
-      env: process.env,
+      env: {
+        ...process.env,
+        GIT_SSL_NO_VERIFY: true,
+      },
       stdio: 'inherit',
     });
 
@@ -46,7 +49,7 @@ async function getPackageJsonData() {
     console.log(chalk.red.bold(`package.json not found at ${packageJsonPath}`));
     throw new Error('Package.json not Found');
   }
-  return JSON.parse(await fs.readFile(packageJsonPath));
+  return JSON.parse(await fs.readFileSync(packageJsonPath));
 }
 
 module.exports = {

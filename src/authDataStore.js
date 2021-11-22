@@ -1,6 +1,6 @@
 const path = require('path');
 const chalk = require('chalk');
-const fs = require('fs/promises');
+const fs = require('fs');
 const Promise = require('bluebird');
 const { checkFileExists } = require('./utils');
 const { getUserNameAndPassword } = require('./promptInput');
@@ -12,7 +12,7 @@ const authJsonPath = path.join(pathOfCurrentDirectory, AUTH_FILE);
 
 async function loadAuthJsonFile() {
   console.log(chalk.green(`${AUTH_FILE} exists`));
-  authData = JSON.parse(await fs.readFile(authJsonPath));
+  authData = JSON.parse(await fs.readFileSync(authJsonPath));
   return authData;
 }
 
@@ -25,7 +25,7 @@ async function populateAuthJsonFromCli(domains) {
       authData[domain] = { username, password };
     }
   });
-  await fs.writeFile(authJsonPath, JSON.stringify(authData, null, 2));
+  await fs.writeFileSync(authJsonPath, JSON.stringify(authData, null, 2));
 }
 
 async function getAuthJsonContents(domains) {

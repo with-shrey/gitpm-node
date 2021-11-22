@@ -1,5 +1,5 @@
 const childProcess = require('child_process');
-const fsPromise = require('fs/promises');
+const fsPromise = require('fs');
 const fs = require('fs');
 const Promise = require('bluebird');
 
@@ -19,10 +19,12 @@ module.exports = {
     });
   },
 
-  checkFileExists(file) {
-    return fsPromise
-      .access(file, fs.constants.F_OK)
-      .then(() => true)
-      .catch(() => false);
+  async checkFileExists(file) {
+    try {
+      fsPromise.accessSync(file, fs.constants.F_OK);
+      return true;
+    } catch (e) {
+      return false;
+    }
   },
 };
